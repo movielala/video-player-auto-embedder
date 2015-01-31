@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<title>MLLEmbedder - Example</title>
+
+		<script>
+			//Loader (With Comments)
+			(function (documentReference, scriptString, embedderPath) {
+				
+				//Create a script element
+				var element = documentReference.createElement(scriptString);
+
+				//Find where the other scripts are
+				var others = documentReference.getElementsByTagName(scriptString);
+
+				//Grab one of them
+				var other = others[0];
+
+				//Set async for browsers that support it
+				element.async = true;
+
+				//Set path for our element
+				element.src = embedderPath;
+
+				//Inject our element
+				other.parentNode.insertBefore(element, other);
+
+			}(document, 'script', 'embedder.js'));
+
+			//Configuration
+			var _mlle = {
+				clientId: 'SomeCompany',
+				some: 'thing'
+			};
+		</script>
+	</head>
+	<body>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/Ga99hMi7wfY" frameborder="0" allowfullscreen></iframe>
+		<iframe width="560" height="315" src="http://www.youtube.com/embed/bo36MrBfTk4" frameborder="0" allowfullscreen></iframe>
+	</body>
+</html>

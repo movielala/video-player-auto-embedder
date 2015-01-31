@@ -1,0 +1,10 @@
+# Build artifacts
+
+/node_modules
+
+# Sublime Text Stuff
+
+/mllembedder.sublime-project
+/mllembedder.sublime-workspace
+
+#Other
