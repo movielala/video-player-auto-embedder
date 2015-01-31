@@ -1,7 +1,6 @@
-# video-player-auto-embedder
+# MovieLaLa Video Player Auto Embedder (MLLEmbedder)
 
 [![Code Climate](https://codeclimate.com/github/movielala/video-player-auto-embedder/badges/gpa.svg)](https://codeclimate.com/github/movielala/video-player-auto-embedder)
-# MovieLaLa Video Player Auto Embedder (MLLEmbedder)
 
 ## How to Use
 
