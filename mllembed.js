@@ -57,7 +57,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     };
 
     //Initialize configuration
-    mllembed.configuration = {
+    var configuration = {
         _autorun: !amd,
         _embedUrl: 'https://embed.movielala.com/embed/',
         _youtubeRegexps: [
@@ -68,17 +68,17 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     };
 
     //The function that builds the query string
-    mllembed.getQueries = function () {
+    var getQueries = function () {
 
         var list = [],
             i;
 
-        for (i in mllembed.configuration) {
+        for (i in configuration) {
             //Check if the property is not inherited
-            if (mllembed.configuration.hasOwnProperty(i)) {
+            if (configuration.hasOwnProperty(i)) {
                 //Check if it is not private
                 if (!i.match(/^\_/)) {
-                    list.push(i + '=' + mllembed.configuration[i]);
+                    list.push(i + '=' + configuration[i]);
                 }
             }
         }
@@ -91,11 +91,11 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     mllembed.config = function (key, value) {
 
         //Get the old value
-        var oldValue = mllembed.configuration[key];
+        var oldValue = configuration[key];
 
         //Set the value if it's provided
         if (arguments.length !== 1) {
-            mllembed.configuration[key] = value;
+            configuration[key] = value;
         }
 
         DEBUG && console.info('[mll.embed] Configuration "' + key + '"=>"' + value + '" (was "' + oldValue + '") done.'); //jshint ignore:line
@@ -106,7 +106,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     };
 
     //The function that converts embeds
-    mllembed.convert = function convert(element) {
+    var convert = function convert(element) {
 
         //Is this a DOM element?
         if (typeof element !== 'object' || !element.tagName) {
@@ -122,8 +122,8 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
 
         //Try to match the URL
         var match;
-        for (var i = mllembed.configuration._youtubeRegexps.length; i--;) {
-            var regexp = mllembed.configuration._youtubeRegexps[i];
+        for (var i = configuration._youtubeRegexps.length; i--;) {
+            var regexp = configuration._youtubeRegexps[i];
 
             //Try to match
             match = element.src.match(regexp);
@@ -154,10 +154,10 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Using "&amp;" instead of "&" is an HTML thing
         //Since this code isn't being inlined in HTML, we don't have to use "&amp;"
         //http://stackoverflow.com/questions/7261628/xhtml-html-js-syntax-when-do-i-use-amp
-        var queryString = videoQueries.concat(mllembed.getQueries()).join('&');
+        var queryString = videoQueries.concat(getQueries()).join('&');
 
         //Change the source
-        element.src = mllembed.configuration._embedUrl + videoId + '?' + queryString;
+        element.src = configuration._embedUrl + videoId + '?' + queryString;
 
         DEBUG && console.info('[mll.embed] Converted to "' + element.src + '".'); //jshint ignore:line
 
@@ -166,7 +166,13 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     };
 
     //The function that looks for embeds to convert them
-    mllembed.run = function run() {
+    mllembed.run = function run(element) {
+
+        //Was an element specified?
+        if (arguments.length !== 0) {
+            //Convert a single element
+            return convert(element);
+        }
 
         DEBUG && console.info('[mll.embed] Running...'); //jshint ignore:line
 
@@ -186,7 +192,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
             iframe.setAttribute('data-mllembed-checked', true);
 
             //Let's convert it
-            mllembed.convert(iframes[i]);
+            convert(iframes[i]);
         }
 
         DEBUG && console.info('[mll.embed] Ran.'); //jshint ignore:line
@@ -195,9 +201,15 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
 
     //The function that stores callbacks and calls them when we are ready
     //The execution is FIFO
-    mllembed.isReady = false;
+    var isReady = false;
     var readyCallbacks = [];
     mllembed.ready = function ready(callback) {
+
+        //Was an callback specified?
+        if (arguments.length === 0) {
+            //Return the ready status
+            return isReady;
+        }
 
         //Is this a valid callback?
         if (typeof callback !== 'function') {
@@ -205,7 +217,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         }
 
         //Are we ready?
-        if (mllembed.isReady) {
+        if (isReady) {
 
             DEBUG && console.info('[mll.embed] Calling "ready()" callback directly...'); //jshint ignore:line
 
@@ -230,7 +242,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         DEBUG && console.info('[mll.embed] "onReady()" got called.'); //jshint ignore:line
 
         //Mark it
-        mllembed.isReady = true;
+        isReady = true;
 
         //Call the callbacks
         var callback;
