@@ -28,15 +28,6 @@
 		lazycaller.stack.push(arguments);
 		return;
 
-		//Do we have a caller?
-		//We will have this after mllembed.js loads
-		/*if (typeof lazycaller.caller === 'function') {
-			lazycaller.caller.apply(lazycaller, arguments);
-		//No? Push the call to the stack so it can be called later
-		} else {
-			lazycaller.stack.push(arguments);
-		}*/
-
 	};
 
 	//Initialize the stack
