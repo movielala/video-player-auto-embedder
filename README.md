@@ -6,158 +6,67 @@
 ## What is MLLEmbed (mll.embed)
 
 MLLEmbed, or by it's module name `mll.embed`, is a script that turns YouTube embeds into MovieLaLa embeds.
-It looks for IFRAMEs and converts their URLs.
+It looks for IFRAMEs and changes their URLs.
 
-For example, this:
+For example, this url:
 ```
 http://www.youtube.com/embed/bo36MrBfTk4?autoplay=1
 ```
 will become:
 ```
-http://embed.movielala.com/embed/bo36MrBfTk4?autoplay=1&clientId=SomeCompany&some=thing
+http://embed.movielala.com/embed/bo36MrBfTk4?autoplay=1&clientId=YourCompany
 ```
 
-## How to Use
+## Recommended Usages
 
-MLLEmbed gives you three options here:
+### Asynchronous Loading
 
-1- Asynchronized loading with `mllembed-loader`.
-2- Asynchronized loading with RequireJS and alike.
-3- Synchronized loading.
-
-The first method is a little bit different so please make sure you have followed the documentation if you decide to use others.
-
-### Asynchronized with `mllembed-loader`
-
-[Link to Example](/examples/async-with-loader.html)
-
-```html
+```
 <script>
-    !function(e, t, n, s) {
-        "use strict";
-        var c, a = t.createElement(n), m = t.getElementsByTagName(n), r = m[0];
-        a.async = !0, a.src = s, r.parentNode.insertBefore(a, r), c = function() {
-            c.stack.push(arguments);
-        }, c.stack = [], e.mllembed = c;
-    }(window, document, "script", "../mllembed.js");
+!function(e, t, n, s) {
+    'use strict';
+    var c, m = t.createElement(n), a = t.getElementsByTagName(n), r = a[0];
+    m.async = !0, m.src = s, r.parentNode.insertBefore(m, r), c = function() {
+        c.stack.push(arguments);
+    }, c.stack = [], e.mllembed = c;
+}(window, document, 'script', 'https://assets-embed.movielala.com/mllembed.min.js');
 
-    /*
-        This example is different than sync and async-with-requirejs because it uses mllembed-loader and it's lazycaller.
-
-        All calls made here (like "mllembed('config', ...);" and "mllembed('ready', ...);") are not actually run
-            and are pushed to lazycaller's stack. When mllembed is loaded, it looks for the "lazycaller.stack" array
-            and executes every call stored in it.
-
-        By doing this, we can fake these calls and make them look sync.
-    */
-
-    //Configuration
-    mllembed('config', 'clientId', 'SomeCompany');
-    mllembed('config', 'something', 'else');
-
-    //Calling the API
-    mllembed('ready', function (mllembed) {
-
-        //Add a new iframe
-        $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Run the automatic converter manually so it finds the iframe above
-        mllembed.run();
-
-        //Add another iframe
-        var iframe = $('<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/_cLvpJY2deo?showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Ask mllembed to convert the inserted iframe
-        mllembed.convert(iframe[0]);
-
-    });
+//Configuration
+mllembed('config', 'clientId', 'YourCompany');
 </script>
 ```
 
+### Synchronous Loading
 
-### Asynchronized with RequireJS
+```
+<script src="https://assets-embed.movielala.com/mllembed.min.js"></script>
+<script>
+//Configuration
+mllembed.config('clientId', 'YourCompany');
+</script>
+```
 
-[Link to Example](/examples/async-with-requirejs.html)
+### Handling Insertations after DOMContentReady
 
-Since MLLEmbed is a named module, you won't be able to load it using it's path.
-MLLEmbed also won't automatically run when it's called as an AMD module so you have to call `mllembed.run()` manually.
+MLLEmbed automatically runs on `DOMContentReady` and `load`. If you are add iframes after, you can handle them like this:
 
 ```javascript
-//Wrong:
-require(['path/to/mllembed.min.js'], function (mllembed) {
-    //mllembed is undefined!
-});
+//Append iframe
+$('#mycontainer').append('<iframe src="http://www.youtube.com/embed/bo36MrBfTk4"></iframe>');
 
-//Correct:
-require.config({
-    paths: {
-        'mll.embed': 'path/to/mllembed.min.js'
-    }
-});
-
-//Want to use the API?
-require(['jquery', 'mll.embed'], function ($, mllembed) {
-
-    //Configure
-    mllembed.config('clientId', 'SomeCompany');
-    mllembed.config('something', 'else');
-
-    mllembed.ready(function () {
-
-        //Convert existing iframes on the page
-        mllembed.run();
-
-        //Add a new iframe
-        $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Run the automatic converter manually so it finds the iframe above
-        mllembed.run();
-
-        //Add another iframe
-        var iframe = $('<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/_cLvpJY2deo?showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Ask mllembed to convert the inserted iframe
-        mllembed.convert(iframe[0]);
-
-    });
-
-});
+//Run MLLEmbed
+mllembed.run();
 ```
 
-### Synchronized
+## Details on Usage Methods
 
-[Link to Example](/examples/sync.html)
+MLLEmbed gives you three options:
 
-```html
-<script src="path/to/embed.js"></script>
-<script>
-    //Configure
-    mllembed.config('clientId', 'SomeCompany');
-    mllembed.config('something', 'else');
+- [Asynchronized Usage with MLLEmbed Loader](https://github.com/movielala/video-player-auto-embedder/wiki/Asynchronized-Usage-with-MLLEmbed-Loader)
+- [Asynchronized Usage with RequireJS](https://github.com/movielala/video-player-auto-embedder/wiki/Asynchronized-Usage-with-RequireJS)
+- [Synchronized Usage](https://github.com/movielala/video-player-auto-embedder/wiki/Synchronized-Usage)
 
-    mllembed.ready(function (mllembed) {
-
-        //Add a new iframe
-        $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Run the automatic converter manually
-        mllembed.run();
-
-        //Add another
-        var iframe = $('<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/_cLvpJY2deo?showinfo=0" frameborder="0" allowfullscreen></iframe>')
-            .appendTo('body');
-
-        //Convert an element manually
-        mllembed.convert(iframe[0]);
-
-    });
-</script>
-```
+Please make sure you follow the documentation exactly if you decide not to use recommended techniques.
 
 ## How to Build
 
