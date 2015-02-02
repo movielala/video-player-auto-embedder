@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>MLLEmbedder - Example</title>
+
+        <script src="../mllembed.min.js"></script>
+        <script src="lib/jquery-2.1.3.min.js"></script>
+        <script>
+			mllembed.ready(function () {
+
+                //Configure
+                mllembed.config('clientId', 'SomeCompany');
+                mllembed.config('something', 'else');
+
+                //Add a new iframe
+                $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1" frameborder="0" allowfullscreen></iframe>')
+                    .appendTo('body');
+
+                //Run the automatic converter manually
+                mllembed.run();
+
+                //Add another
+                var iframe = $('<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/_cLvpJY2deo?showinfo=0" frameborder="0" allowfullscreen></iframe>')
+                    .appendTo('body');
+
+                //Convert an element manually
+                mllembed.convert(iframe[0]);
+
+            });
+        </script>
+    </head>
+    <body>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Ga99hMi7wfY" frameborder="0" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="http://www.youtube.com/embed/bo36MrBfTk4" frameborder="0" allowfullscreen></iframe>
+    </body>
+</html>
