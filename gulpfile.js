@@ -8,6 +8,7 @@
 	var jshint = require('gulp-jshint'),
 		rename = require('gulp-rename'),
 		uglify = require('gulp-uglify'),
+		replace = require('gulp-replace'),
 		sourcemaps = require('gulp-sourcemaps'),
 		inlinesource = require('gulp-inline-source');
 
@@ -41,9 +42,10 @@
 			.pipe(jshint.reporter(stylish))
 			.pipe(uglify({
 				output: {
-					'beautify': true,
+					'beautify': false,
+					'max_line_len': 50,
 					'space_colon': false,
-					'indent_level': 4
+					'indent_level': 4,
 				},
 				compress: {
 					'hoist_vars': true,
@@ -52,6 +54,7 @@
 					}
 				}
 			}))
+			.pipe(replace(/\n {8}/g, ''))
 			.pipe(rename('mllembed-loader.min.js'))
 			.pipe(gulp.dest('.'));
 

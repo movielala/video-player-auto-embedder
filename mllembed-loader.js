@@ -6,11 +6,8 @@
 	//Create a script element
 	var element = document.createElement(scriptString);
 
-	//Find where the other scripts are
-	var others = document.getElementsByTagName(scriptString);
-
-	//Grab one of them
-	var other = others[0];
+	//Find the first script in page
+	var other = document.querySelector(scriptString);
 
 	//Set async for browsers that support it
 	element.async = true;
@@ -26,9 +23,15 @@
 
 		//Push the call to the stack so it can be called later
 		lazycaller.stack.push(arguments);
-		return;
 
 	};
+
+	//Add method wrappers
+	['run', 'config', 'ready'].forEach(function (method) {
+
+		lazycaller[method] = lazycaller.bind(null, method);
+
+	});
 
 	//Initialize the stack
 	lazycaller.stack = [];
