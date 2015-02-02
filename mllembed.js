@@ -1,4 +1,5 @@
 /*globals define */
+if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
 //AMD Loader with fallback
 //Cleaner version of https://github.com/umdjs/umd/blob/master/amdWeb.js
 (function (root, moduleName, factory) {
