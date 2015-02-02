@@ -13,8 +13,23 @@
         c.stack.push(arguments);
     }, c.stack = [], e.mllembed = c;
 }(window, document, "script", "../mllembed.js");</script>
-        <!-- These two script blocks can be joined without any problems -->
+
+        <!--
+            The previous and the next script blocks can be joined without any problems.
+            They are not joined in this example because how our build environment works.
+        -->
+        
         <script>
+            /*
+                This example is different than sync and async-with-requirejs because it uses mllembed-loader and it's lazycaller.
+
+                All calls made here (like "mllembed('config', ...);" and "mllembed('ready', ...);") are not actually run
+                    and are pushed to lazycaller's stack. When mllembed is loaded, it looks for the "lazycaller.stack" array
+                    and executes every call stored in it.
+
+                By doing this, we can fake these calls and make them look sync.
+            */
+
             //Configuration
             mllembed('config', 'clientId', 'SomeCompany');
             mllembed('config', 'something', 'else');
@@ -22,17 +37,25 @@
             //Calling the API
             mllembed('ready', function (mllembed) {
 
-                //Run the automatic converter
+                //Add a new iframe
+                $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>')
+                    .appendTo('body');
+
+                //Run the automatic converter manually so it finds the iframe above
                 mllembed.run();
 
-                //Convert an element manually
-                mllembed.convert($('#myframe')[0]);
+                //Add another iframe
+                var iframe = $('<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/_cLvpJY2deo?showinfo=0" frameborder="0" allowfullscreen></iframe>')
+                    .appendTo('body');
+
+                //Ask mllembed to convert the inserted iframe
+                mllembed.convert(iframe[0]);
 
             });
         </script>
     </head>
     <body>
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Ga99hMi7wfY" frameborder="0" allowfullscreen></iframe>
-        <iframe width="560" height="315" src="http://www.youtube.com/embed/bo36MrBfTk4" frameborder="0" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="http://www.youtube.com/embed/bo36MrBfTk4?autoplay=1" frameborder="0" allowfullscreen></iframe>
     </body>
 </html>

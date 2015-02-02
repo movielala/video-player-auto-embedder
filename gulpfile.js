@@ -13,7 +13,7 @@
 
 	var DEBUG = (process.env.DEBUG === 'true');
 
-	console.log(DEBUG);
+	console.log('DEBUG', DEBUG);
 
 	gulp.task('mllembed', function () {
 
