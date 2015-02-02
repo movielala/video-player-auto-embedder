@@ -82,6 +82,7 @@ The first method is a little bit different so please make sure you have followed
 [Link to Example](/examples/async-with-requirejs.html)
 
 Since MLLEmbed is a named module, you won't be able to load it using it's path.
+MLLEmbed also won't automatically run when it's called as an AMD module so you have to call `mllembed.run()` manually.
 
 ```javascript
 //Wrong:
@@ -96,17 +97,17 @@ require.config({
     }
 });
 
-//Don't care about using the API?
-require(['mll.embed']);
-
 //Want to use the API?
-require(['jquery', 'mll.embed', function ($, mllembed) {
+require(['jquery', 'mll.embed'], function ($, mllembed) {
 
     //Configure
     mllembed.config('clientId', 'SomeCompany');
     mllembed.config('something', 'else');
 
     mllembed.ready(function () {
+
+        //Convert existing iframes on the page
+        mllembed.run();
 
         //Add a new iframe
         $('<iframe width="640" height="360" src="https://www.youtube.com/embed/zf_cb_Nw5zY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>')
@@ -124,7 +125,7 @@ require(['jquery', 'mll.embed', function ($, mllembed) {
 
     });
 
-}]);
+});
 ```
 
 ### Synchronized
