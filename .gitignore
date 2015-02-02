@@ -2,9 +2,14 @@
 
 /node_modules
 
+# Crash dumps and logs
+
+/*.dmp
+/*.log
+
 # Sublime Text Stuff
 
-/mllembedder.sublime-project
-/mllembedder.sublime-workspace
+/mllembed.sublime-project
+/mllembed.sublime-workspace
 
 #Other
