@@ -21,7 +21,7 @@ http://embed.movielala.com/embed/bo36MrBfTk4?autoplay=1&clientId=YourCompany
 
 ### Asynchronous Loading
 
-```
+```html
 <script>
 !function(e, t, n, s) {
     'use strict';
@@ -38,7 +38,7 @@ mllembed('config', 'clientId', 'YourCompany');
 
 ### Synchronous Loading
 
-```
+```html
 <script src="https://assets-embed.movielala.com/mllembed.min.js"></script>
 <script>
 //Configuration
