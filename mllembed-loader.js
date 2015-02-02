@@ -45,4 +45,4 @@
 	//Export the lazycaller
 	window.mllembed = lazycaller;
 
-}(window, document, 'script', '../mllembed.js'));
+}(window, document, 'script', '../mllembed.min.js'));

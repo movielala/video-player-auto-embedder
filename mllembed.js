@@ -12,7 +12,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         define(moduleName, [], function () {
 
             //Call the factory
-            return factory.apply(root);
+            return factory.apply(root, [true]);
 
         });
     //Export to root (window) otherwise
@@ -23,18 +23,19 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Doing this will allow them to use just `mymodulename.method()`
         var exportName = moduleName.replace(/\./g, '');
 
-        root[exportName] = factory.apply(root);
+        root[exportName] = factory.apply(root, [false]);
 
     }
 
 //Module registration
-}(this, 'mll.embed', function () {
+}(this, 'mll.embed', function (amd) {
 
    'use strict';
 
     var window = this;
     var document = window.document;
-    var lazycaller = window.mllembed;
+
+    DEBUG && console.info('[mll.embed] Factory called.'); //jshint ignore:line
 
     //Setup the caller
     //This caller just replicates async loader's `lazyloader()` to bypass the lazy call stack and invoke methods directly
@@ -48,6 +49,8 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Get the method
         var method = args.shift();
 
+        DEBUG && console.info('[mll.embed] Got lazycaller call for "' + method + '()".', args); //jshint ignore:line
+
         //Call the method
         mllembed[method].apply(null, args);
 
@@ -55,6 +58,7 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
 
     //Initialize configuration
     mllembed.configuration = {
+        _autorun: !amd,
         _embedUrl: 'https://embed.movielala.com/embed/',
         _youtubeRegexps: [
             /^https?:\/\/www\.youtube\.com\/embed\/([\w\-]{11})(?:\?(.+)$|$)/,
@@ -94,6 +98,8 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
             mllembed.configuration[key] = value;
         }
 
+        DEBUG && console.info('[mll.embed] Configuration "' + key + '"=>"' + value + '" (was "' + oldValue + '") done.'); //jshint ignore:line
+
         //Return the old value
         return oldValue;
 
@@ -131,12 +137,12 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Did it work?
         if (!match) {
             
-            DEBUG && console.info('[mll.embed] Couldn\'t match "' + element.src + '".'); //jshint ignore:line
+            DEBUG && console.info('[mll.embed] Converter couldn\'t match "' + element.src + '".'); //jshint ignore:line
 
             return false;
         }
 
-        DEBUG && console.info('[mll.embed] Matched "' + element.src + '".'); //jshint ignore:line
+        DEBUG && console.info('[mll.embed] Converter matched "' + element.src + '".'); //jshint ignore:line
 
         //Get the video ID
         var videoId = match[1];
@@ -153,12 +159,16 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Change the source
         element.src = mllembed.configuration._embedUrl + videoId + '?' + queryString;
 
+        DEBUG && console.info('[mll.embed] Converted to "' + element.src + '".'); //jshint ignore:line
+
         return true;
 
     };
 
     //The function that looks for embeds to convert them
     mllembed.run = function run() {
+
+        DEBUG && console.info('[mll.embed] Running...'); //jshint ignore:line
 
         //Look for iframes
         //We need to use lowercase 'iframe' for XML compatibility
@@ -179,6 +189,8 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
             mllembed.convert(iframes[i]);
         }
 
+        DEBUG && console.info('[mll.embed] Ran.'); //jshint ignore:line
+
     };
 
     //The function that stores callbacks and calls them when we are ready
@@ -195,12 +207,16 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
         //Are we ready?
         if (mllembed.isReady) {
 
+            DEBUG && console.info('[mll.embed] Calling "ready()" callback directly...'); //jshint ignore:line
+
             //Then just call it
             callback(mllembed);
 
             return;
 
         }
+
+        DEBUG && console.info('[mll.embed] Pushing "ready()" callback to the list...'); //jshint ignore:line
 
         //Push the callback to the list
         readyCallbacks.push(callback);
@@ -211,13 +227,22 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
     //We might call it more than once, it's no problem
     var onReady = function onReady() {
 
+        DEBUG && console.info('[mll.embed] "onReady()" got called.'); //jshint ignore:line
+
         //Mark it
         mllembed.isReady = true;
 
         //Call the callbacks
         var callback;
         while ((callback = readyCallbacks.shift())) {
+            DEBUG && console.info('[mll.embed] Calling "ready()" callback late...'); //jshint ignore:line
+
             callback(mllembed);
+        }
+
+        //Should we autorun?
+        if (!mllembed.config('_autorun')) {
+            return;
         }
 
         //We could call `run()` right here, but there will probably be other scripts which inject content on DOMContentLoaded or load.
@@ -226,38 +251,37 @@ if (typeof DEBUG === 'undefined') DEBUG = false; //jshint ignore:line
 
     };
 
-    //The caller
-    /*mllembed.caller = function () {
+    //Detect the lazycaller
+    if (typeof window.mllembed === 'function' && window.mllembed.stack) {
+        //Store the lazycaller
+        var lazycaller = window.mllembed;
 
-        //Convert arguments to array
-        var args = Array.prototype.slice.call(arguments);
+        //Swap it with mllembed
+        window.mllembed = mllembed;
 
-        //Get the method
-        var method = args.shift();
+        //Invoke the calls on the lazycaller stack
+        DEBUG && console.info('[mll.embed] Emptying lazycaller stack...'); //jshint ignore:line
 
-        //Call the method
-        mllembed[method].apply(null, args);
-
-    };*/
-
-    //Run!
-    //Are we ready?
-    if (document.readyState === 'complete') {
-        onReady();
-    //No?
-    } else {
-        window.addEventListener('load', onReady, false);
-        document.addEventListener('DOMContentLoaded', onReady, false);
-    }
-
-    //Invoke the calls on the lazycaller stack
-    if (typeof lazycaller === 'object' && lazycaller.stack) {
         for (var i = lazycaller.stack.length; i--;) {
             var call = lazycaller.stack[i];
 
             //Invoke the call
             mllembed.apply(null, call);
         }
+    }
+
+    //Run!
+    //Are we ready?
+    if (document.readyState === 'complete') {
+        DEBUG && console.info('[mll.embed] Document is ready.'); //jshint ignore:line
+
+        onReady();
+    //No?
+    } else {
+        DEBUG && console.info('[mll.embed] Document is not ready.'); //jshint ignore:line
+
+        window.addEventListener('load', onReady, false);
+        document.addEventListener('DOMContentLoaded', onReady, false);
     }
 
     //Export library
