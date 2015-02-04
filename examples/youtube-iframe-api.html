@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>MLLEmbedder - Example</title>
+        
+        <script>
+            var tag = document.createElement('script');
+            tag.src = "https://d20psk4uwj5q3z.cloudfront.net/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            var player;
+            var onYouTubeIframeAPIReady = function () {
+
+                //Calling the API
+                player = new YT.Player('myplayer', {
+                    height: '455',
+                    width: '743',
+                    videoId: '5i90Qr0Qi6w',
+                    playerVars: {
+                        autoplay: true,
+                        autohide: 1,
+                        enablejsapi: 1,
+                        fs: 1,
+                        rel: 0,
+                        showinfo: 0
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Video</h1>
+        <div id="myplayer"></div>
+        <h1>Controls</h1>
+        <ul>
+            <li><a onclick="player.playVideo();">player.playVideo()</a></li>
+            <li><a onclick="player.pauseVideo();">player.pauseVideo()</a></li>
+        </ul>
+        <h1>Navigator</h1>
+        <ul id="Navigations">
+            <li><a onclick="player.loadVideoById('5i90Qr0Qi6w');">Seventh Son - Official Trailer [HD]</a></li>
+            <li><a onclick="player.loadVideoById('soHbiv0sjJI');">Seventh Son - Comflix Trailer Remix (HD)</a></li>
+            <li><a onclick="player.loadVideoById('sPUwD-s4qRk');">Dead Rising: Watchtower - Exclusive to Crackle, streaming March 27th [HD]</a></li>
+            <li><a onclick="player.loadVideoById('60MJvwEyhRc');">Behind the Scenes of Blackhat - Joko Widodo Visit [HD]</a></li>
+        </ul>
+    </body>
+</html>

@@ -19,6 +19,26 @@ http://embed.movielala.com/embed/bo36MrBfTk4?autoplay=1&clientId=YourCompany
 
 ## Recommended Usages
 
+### With YouTube IFrame API
+
+If you already have a YouTube IFrame API implementation, all you have to do is replace the URL of IFrame API with "https://d20psk4uwj5q3z.cloudfront.net/iframe_api". There is no need to use MLLEmbed.
+
+```html
+<script>
+//This is the original loader code:
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+//All you have to do is change the URL:
+var tag = document.createElement('script');
+tag.src = "https://d20psk4uwj5q3z.cloudfront.net/iframe_api"; //Changed
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+</script>
+```
+
 ### Asynchronous Loading
 
 ```html
@@ -60,8 +80,9 @@ mllembed.run();
 
 ## Details on Usage Methods
 
-MLLEmbed gives you three options:
+You have four options:
 
+- [YouTube IFrame API without MLLEmbed](https://github.com/movielala/video-player-auto-embedder/blob/master/examples/youtube-iframe-api.html)
 - [Asynchronized Usage with MLLEmbed Loader](https://github.com/movielala/video-player-auto-embedder/wiki/Asynchronized-Usage-with-MLLEmbed-Loader)
 - [Asynchronized Usage with RequireJS](https://github.com/movielala/video-player-auto-embedder/wiki/Asynchronized-Usage-with-RequireJS)
 - [Synchronized Usage](https://github.com/movielala/video-player-auto-embedder/wiki/Synchronized-Usage)
