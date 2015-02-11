@@ -34,6 +34,7 @@ Compatibilty with Youtube IFrame
 ### Synchronous Loading
 
 ```html
+//Configuration Cloudflare powered CDN with 50+ POPs
 <script src="https://assets-embed.movielala.com/mllembed.min.js"></script>
 <script>
 //Configuration
