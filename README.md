@@ -88,7 +88,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 //All you have to do is change the URL:
 var tag = document.createElement('script');
-tag.src = "https://d20psk4uwj5q3z.cloudfront.net/iframe_api"; //Changed
+tag.src = "https://assets-embed.movielala.com/iframe_api"; //Changed
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 </script>
