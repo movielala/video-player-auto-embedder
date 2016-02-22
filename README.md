@@ -75,7 +75,7 @@ mllembed.run();
 
 ### With YouTube IFrame API
 
-If you already have a YouTube IFrame API implementation, all you have to do is replace the URL of IFrame API with "https://d20psk4uwj5q3z.cloudfront.net/iframe_api". There is no need to use MLLEmbed.
+If you already have a YouTube IFrame API implementation, all you have to do is replace the URL of IFrame API with "https://assets-embed.movielala.com/iframe_api". There is no need to use MLLEmbed.
 
 This is the original youtube loader code:
 ```html
